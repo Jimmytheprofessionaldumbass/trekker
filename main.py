@@ -1,22 +1,18 @@
 # Working memory file structure so far. This is where every agent gets command as well as know so far what is going on
 '''
 Our current task is {current task}
-
 progress: {progress}
 
-Last read by: {agent}
-Messages (write in your designated spot, delete others' messages after being read)
-central executive:
+central executive message:
+Response (only respond if empty)
 propose_agent:
 action_agent:
 critique_agent:
 
-Additional info (never overwrite beyond one line, only append and delete strategically):
+Working Memory:
 '''
 # One big issue if they read wm and decides to write something but still thinking, but at the same time central exec agent writes and the original agent is notified, so it is asked to write again and is still slower than central exec agent, and it just continuously gets stuck?
-# Maybe a solution: having a central executive message that is sent to the agents
-
-def init(): # Clear working memory? what happens when it quits a world? it would never intentionall quit a world, okay so no clearing, just get back into it
+# The central executive will send message via a file and that will be copied into the wmm by whatever agent is reading it and the agent will answer in their assigned place in wm.txt, then the central executive will see and delete those responses and give a new one when necessary
 
 
 def propose_new_task(world_snapshot,available_skills,server):
@@ -36,9 +32,9 @@ def propose_new_task(world_snapshot,available_skills,server):
 
 
 
-def on_new_chat_message(world_snapshot,available_skills,server,message): # For now I'm thinking of nominating this as the Central Executive because it modifies working memory and knows everything
+def on_new_chat_message(world_snapshot,available_skills,server,message): # Central Executive & Episodic Buffer
     chat_situation = open('w', 'chat_situation.txt')
-    wm = open('w', 'working memory')
+    wm = open('r', 'working memory')
     prompt = '''
     You are playing on a minecraft server called {server name} and you are responsible for making sense of managing chat and processes
     Your job is to make sure the other processes understand what is going on by putting relevant information into a file they will read.
@@ -58,14 +54,17 @@ def on_new_chat_message(world_snapshot,available_skills,server,message): # For n
     Respond with the following format:
         Interpretaton: it appears that {what is going on and why it is relevant to the current task}
         Response: {a quick one sentence response to the players if necessary, otherwise leave blank}
+        Message: {your message to the main loop, if necessary, otherwise leave blank}
         Extracted:
         {Player name}: {Player Message}
-        Modify working memory: {ed-style commands that modify the working memory. leave blank if unnecessary}
+        Additional chat entries...
 
-    Interpretation is your current understanding of the situation, do not 
+    Interpretation is your current understanding of the situation 
 
     ''' # Maybe workshop the definition of skills as code that can run
     # If it notices someone swinging at a sword while running towards voyager while voyager is still in the coding stage, it will write in his assigned slot in working memory (not in wm.txt that his notes are of high value) and since the action agent sees it, it can be told to be able to run a skill that immediately deals with it. if the proposal or critique agent sees it, then it will know to skip its' turn and let the action agent handle it by saying skip turn. so essentially what this agent does is tell everyone what's going on by modifying chat status and working memory.
+
+    if 
 
 
     response = llm(MODEL, prompt)
